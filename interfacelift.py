@@ -1,52 +1,69 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import sys
 from urllib2 import urlopen, Request
-from re import findall
-from time import sleep
-# from subprocess import call
-from os.path import expanduser
+from re      import findall
+from time    import sleep
+from os.path import expanduser, isfile
 
-# Modify the two strings below to your preferences
-urlspec = 'rating/widescreen/1920x1200/'
-urlspec = 'tags/60/location/canada/'
-random  = '7yz4ma1/'
+useragent     = 'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)'
+directory     = expanduser('~')+'/Pictures/Interfacelift-citylights'
+interfacelift = 'http://interfacelift.com/wallpaper/'
+urlspec       = 'tags/1426/scene/city_lights/'
+resolution    = '1920x1080'
+pattern       = '(?<=previews/)\d{5}_\w+\.jpg'
+indices       = 3
 
-resolution = '1920x1200'
-directory = expanduser('~')+'/Pictures/Interfacelift-test'
-rate = '100K'
+def determineRandomPart():
+    print "Attempting to determine random part of the URLs"
+    data = urlopen(interfacelift + "downloads/date/hdtv/1080p/index1.html").read()
+    temp = findall('(?<=<a href="/wallpaper/)([^/]+)(?=/.*1920x1080\.jpg">)', data)
+    if len(temp) == 10 and temp.count(temp[0]) == 10:
+        print "Random part is", temp[0]
+        return temp[0]+'/'
+    else:
+        print "Couldn't determine the random part"
+        exit()
 
-urlbase   = 'http://interfacelift.com/wallpaper/'
-pattern   = '(?<=previews/)\d{5}_\w+\.jpg'
-useragent = 'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)'
-uapixels = 'UA-pixels: '+resolution
-url       = urlbase+urlspec
-# wgetcmd   = [ 'wget', '--user-agent='+useragent, '--directory-prefix='+directory, '--no-clobber', '--wait=5',
-              # '--random-wait', '--limit-rate='+rate, '--retry-connrefused', '--referer='+urlbase ]
-pictures = []
-
-for count in range(2,3):
-        data = urlopen(url + "index" + str(count) + ".html").read()
-        # print data
-        # exit()
+def findPicURLs(random):
+    pictures = []
+    for count in range(1, indices + 1):
+        data = urlopen(interfacelift + urlspec + "index" + str(count) + ".html").read()
+        print "Searching index", str(count), "of", str(indices)
         temp = findall(pattern, data)
-        pictures += [urlbase+random+i.replace('.jpg', '_'+resolution+'.jpg') for i in temp]
-if len(pictures) > 0:
-        print "Attempting to download", len(pictures), "files without wget..."
-        # print '\n'.join(pictures)
-        # exit()
-        for pic in pictures:
-                sleep(5)
-                reqobj = Request(pic, useragent)
-                filename = pic.rpartition('/')[2]
-                print "Laster ned", pic
-                f = open(directory+'/'+filename, "w")
-                data = urlopen(reqobj).read()
-                f.write(data)
-                f.close()
-                print "Ferdig"
-        print "Complete."
-else:
-        print "No pictures to download. Either the range is zero in length or the regex needs to be refined."
+        pictures += [interfacelift + random + i[:-4]+ '_' + resolution + i[-4:] for i in temp]
+    return pictures
 
-# vim:sw=8:ts=8:et:sts=8
+def downloadPictures(pictures):
+    if len(pictures) > 0:
+        print "Attempting to download", len(pictures), "files..."
+        for pic in pictures:
+            if downloadPicture(pic): sleep(5)
+        print "Complete."
+    else:
+        print "No pictures to download."
+
+def downloadPicture(pic):
+    reqobj = Request(pic, useragent)
+    filename = directory + '/' + pic.rpartition('/')[2]
+    if not isfile(filename):
+        print "Downloading", pic.rpartition('/')[2]+"... ",
+        sys.stdout.flush()
+        f = open(filename, "w")
+        data = urlopen(reqobj).read()
+        f.write(data)
+        f.close()
+        print "Done."
+        return True
+    else: 
+        print "Hadde bildet fra før"
+    return False
+
+print "Hello"
+random = determineRandomPart()
+pictures = findPicURLs(random)
+downloadPictures(pictures)
+print "Good bye"
+                
+# vim:sw=4:et:sts=4
