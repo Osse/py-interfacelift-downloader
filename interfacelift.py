@@ -39,7 +39,7 @@ def findPicURLs(random):
     # exit()
     return pictures
 
-def downloadPictures(pictures, firstTime):
+def downloadPictures(pictures):
     if len(pictures) == 0:
         return
     leftovers = []
@@ -47,15 +47,14 @@ def downloadPictures(pictures, firstTime):
     for pic in pictures:
         filename = directory + '/' + pic.rpartition('/')[2]
         if not isfile(filename):
-            if downloadPicture(pic): sleep(5)
             else: leftovers.append(pic)
         else:
             print "The picture is already downloaded"
-    if firstTime and len(leftovers):
+    if len(leftovers):
         print "Attempting one more time to download the 404s"
-        downloadPictures(leftovers, False)
-    else:
-        print "Complete."
+        for pic in leftovers:
+            if downloadPicture(pic): sleep(5) 
+    print "Complete."
 
 def downloadPicture(pic):
     reqobj = Request(pic, useragent)
@@ -79,7 +78,7 @@ if not isdir(directory):
     exit()
 random = determineRandomPart()
 pictures = findPicURLs(random)
-downloadPictures(pictures, True)
+downloadPictures(pictures)
 
 print "Good bye!"
                 
