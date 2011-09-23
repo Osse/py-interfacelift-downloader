@@ -35,8 +35,6 @@ def findPicURLs(random):
         temp = findall(pattern, data)
         pictures.append(interfacelift + random + "hehe.jpg")
         pictures += [interfacelift + random + i[:-4]+ '_' + resolution + i[-4:] for i in temp]
-    # print "\n".join(pictures)
-    # exit()
     return pictures
 
 def downloadPictures(pictures):
