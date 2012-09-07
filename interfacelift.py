@@ -72,12 +72,13 @@ def downloadPicture(pic):
 
 print "Hello!"
 
-if not isdir(directory):
-    print directory, "doesn't exist!"
-    exit()
-random = determineRandomPart()
-pictures = findPicURLs(random)
-downloadPictures(pictures)
+if __name__ == 'main':
+    if not isdir(directory):
+        print directory, "doesn't exist!"
+        exit()
+    random = determineRandomPart()
+    pictures = findPicURLs(random)
+    downloadPictures(pictures)
 
 print "Good bye!"
 
