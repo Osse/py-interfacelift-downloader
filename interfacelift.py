@@ -45,14 +45,14 @@ def downloadPictures(pictures):
     for pic in pictures:
         filename = directory + '/' + pic.rpartition('/')[2]
         if not isfile(filename):
-            if downloadPicture(pic): sleep(5) 
+            if downloadPicture(pic): sleep(5)
             else: leftovers.append(pic)
         else:
             print "The picture is already downloaded"
     if len(leftovers):
         print "Attempting one more time to download the 404s"
         for pic in leftovers:
-            if downloadPicture(pic): sleep(5) 
+            if downloadPicture(pic): sleep(5)
     print "Complete."
 
 def downloadPicture(pic):
@@ -80,5 +80,5 @@ pictures = findPicURLs(random)
 downloadPictures(pictures)
 
 print "Good bye!"
-                
+
 # vim:sw=4:et:sts=4
