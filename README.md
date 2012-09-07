@@ -1,9 +1,3 @@
-_(This branch is a slight experiment. Since wget is executed with the -nc
-option there is no need to check if the file exists from within Python. only
-one wget command is executed with a list of files instead of one wget per file.
-This enables the use of --wait and --random-wait. Since this, the subprocess
-module has been utilized instead of os.system().)_
-
 Py-Interfacelift-downloader
 ===========================
 
