@@ -26,26 +26,21 @@ where
 * `resolution` can instead  be e.g. `1280x1024` or `1080p`
 
 Check how the URL changes when you select the options in Interfacelift itself.
+You can also download images found by tags or anything else. For example,
+
+    urlspec = 'tags/1426/scene/city_lights/'
+
+is valid.
 
 To specify where to save the images, edit the `directory` string. Please leave
 `expanduser('~')` as it is (unless you now what you're doing) and rather edit
 the string after the `+` sign. Start the string with `/` and choose the folder
-you want. If it doesn't exists, `wget` will create it. The variable `rate`
-controls the download rate wget operates with. It is specified as a string to
-allow postfixes such as K and M.
+you want.
 
 To specify how many pictures you want, edit the `range()` function. To download
 the pictures from the _n_ first pages, change it to read `range(1,n+1)`. This
 will download 10 _n_ images.
 
-The regex pattern matches any string which:
-
-* Is preceeded by `<a href="/wallpaper/`
-* contains any amount of any characters
-* ends in `.jpg`
-* preceeds `">`
-
-I think this is enough to filter out only the wanted links. Note that the
-matched string will include the random part of the URL so that you don't have
-to specify it manually. If this script stops working at some point, this regex
-is probably what needs to be changed. 
+The script finds the correct URL to the pictures based on the URL of the
+preview thumbnail. Note that the matched string will include the random part of
+the URL so that you don't have to specify it manually.
