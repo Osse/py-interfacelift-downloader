@@ -33,7 +33,7 @@ def findPicURLs(random):
         data = urlopen(interfacelift + urlspec + "index" + str(count) + ".html").read()
         print "Searching index", str(count), "of", str(indices)
         temp = findall(pattern, data)
-        pictures.append(interfacelift + random + "hehe.jpg")
+        pictures.append(interfacelift + random)
         pictures += [interfacelift + random + i[:-4]+ '_' + resolution + i[-4:] for i in temp]
     return pictures
 
